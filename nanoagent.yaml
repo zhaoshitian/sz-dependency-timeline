@@ -1,0 +1,27 @@
+_ > nanoagent.plugin.v0001.ManifestConfig:
+id: sz-dependency-timeline
+name: Dependency Timeline
+version: 1.0.0
+status: ready
+spec: nanoagent.plugin/v0001
+
+runtime > nanoagent.plugin.v0001.RuntimeConfig:
+  type: mcp_stdio
+  command: [uv, run, --frozen, python, -m, plugin]
+
+permissions > nanoagent.plugin.v0001.PermissionsConfig:
+  network > nanoagent.plugin.v0001.NetworkConfig:
+    hosts: []
+  filesystem > nanoagent.plugin.v0001.FilesystemConfig:
+    write: [workspace]
+
+tools > dict[contract.Tool, nanoagent.plugin.v0001.ToolConfig]:
+  schedule_jobs:
+    description: "Compute the earliest unlimited-worker schedule for an acyclic job dependency graph."
+tasks > dict[contract.Task, nanoagent.plugin.v0001.TaskConfig]:
+  schedule-jobs:
+    description: "Compute the earliest unlimited-worker schedule for an acyclic job dependency graph."
+    runner: tool
+    tools: [schedule_jobs]
+    reference: null
+    instructions: "Dependencies must form a DAG. Jobs have unlimited parallel workers. start is the maximum finish of direct prerequisites, or zero; finish=start+duration. Rows are ordered by job_id. total is max finish, or zero. Save canonical JSON with records and total at destination and return the same rows and total with its path."
